@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+
+# Artefatos operacionais (OMC / Ralph)
+.omc/
+progress.txt
+
+# Config local do Claude Code
+.claude/
