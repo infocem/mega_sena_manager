@@ -1,11 +1,12 @@
 // Cliente da API oficial da Caixa (incremental). No browser passa pelo proxy de
 // dev do Vite (/api/loterias -> servicebus2.caixa.gov.br/portaldeloterias/api),
-// que contorna o CORS. Robustez: retry com backoff exponencial, timeout por
-// request e headers necessários.
+// que contorna o CORS. No Android nativo, CapacitorHttp bypassa CORS via HTTP nativo.
+// Robustez: retry com backoff exponencial, timeout por request e headers necessários.
 import { parseCaixaRaw } from '../data/parser'
 import type { CaixaConcursoRaw, Concurso } from '../types'
+import { API_BASE } from './base'
 
-const BASE = '/api/loterias/megasena'
+const BASE = API_BASE
 const TIMEOUT_MS = 15000
 const MAX_TENTATIVAS = 5
 
