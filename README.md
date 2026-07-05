@@ -3,12 +3,22 @@
 Gerenciador de jogos da Mega-Sena (Vite + React + TypeScript). Carrega o histórico
 oficial de concursos da Caixa, calcula estatísticas e sugere jogos.
 
+📖 [Guia do Usuário](docs/GUIA-USUARIO.md)
+
 ## Stack
 
 - **Vite** + **React 18** + **TypeScript**
 - **IndexedDB** (via `idb-keyval`) para cache local dos concursos
 - **Recharts** para os gráficos
 - **Vitest** + Testing Library para os testes
+
+## Funcionalidades
+
+- **Dashboard estatístico** com 4 painéis: frequência por dezena, distribuição par/ímpar, maiores atrasos e soma das dezenas
+- **Gerador de jogos** com pesos ajustáveis (quentes/atrasadas/aleatório) e critérios transparentes
+- **Atualização automática** do histórico via API oficial da Caixa
+- **Cache local** com IndexedDB para funcionamento offline após a primeira carga
+- **Suporte a app Android** via Capacitor
 
 ## Desenvolvimento
 
@@ -23,6 +33,19 @@ npm run typecheck  # apenas checagem de tipos
 
 Em dev, as requisições à API oficial passam pelo proxy do Vite
 (`/api/loterias` → `servicebus2.caixa.gov.br/portaldeloterias/api`), o que contorna o CORS.
+
+### App Android (Capacitor)
+
+O projeto pode ser empacotado como app Android nativo via [Capacitor](https://capacitorjs.com/docs).
+
+**Pré-requisitos:** Android SDK, JDK 17+ e Gradle instalados.
+
+```bash
+npm run cap:sync        # build + sync para Android
+npm run cap:open        # abre no Android Studio
+npm run cap:build:debug # gera APK debug
+npm run cap:build:release # gera APK release
+```
 
 ## Base de concursos: como funciona e como manter atualizada
 
