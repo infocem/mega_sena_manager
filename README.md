@@ -80,5 +80,4 @@ src/engine/                # geração de jogos (generator) + RNG
 src/stats/metrics.ts       # estatísticas dos concursos
 src/components/            # UI (Dashboard, Controls, SuggestedGames)
 src/hooks/useConcursos.ts  # hook de carregamento da base
-docs/                      # cronograma e plano do projeto
 ```
