@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Mega-Sena Manager</string>
+    <string name="title_activity_main">Mega-Sena Manager</string>
+    <string name="package_name">com.infocem.megasena</string>
+    <string name="custom_url_scheme">com.infocem.megasena</string>
+</resources>
