@@ -47,6 +47,23 @@ npm run cap:build:debug # gera APK debug
 npm run cap:build:release # gera APK release
 ```
 
+### App iOS (Capacitor)
+
+O projeto também pode ser empacotado como app iOS nativo via [Capacitor](https://capacitorjs.com/docs/ios).
+
+**Pré-requisitos:** macOS, Xcode instalado e um Apple ID configurado.
+
+```bash
+npm run cap:sync:ios        # build + sync para iOS
+npm run cap:open:ios        # abre o projeto no Xcode
+npm run cap:build:ios:debug   # compila o app em Debug
+npm run cap:build:ios:release # compila o app em Release
+```
+
+> ⚠️ **Apple ID gratuito:** o certificado de desenvolvedor gratuito expira a cada 7 dias, sendo necessário reinstalar o app periodicamente para testes locais. Para distribuição via App Store ou TestFlight é necessário ingressar no [Apple Developer Program](https://developer.apple.com/programs/) (pago).
+>
+> ⚠️ **Limitações:** este repositório não inclui CI/CD de iOS nem configuração de assinatura para publicação na App Store.
+
 ## Base de concursos: como funciona e como manter atualizada
 
 O app mantém um histórico de concursos da Mega-Sena em duas camadas. Entender a
