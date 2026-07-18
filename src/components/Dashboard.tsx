@@ -10,6 +10,8 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { megasenaConfig } from '../config/megasena'
+import type { LoteriaConfig } from '../config/loterias'
 import type { Metricas } from '../types'
 
 const ACCENT = '#209869'
@@ -17,15 +19,17 @@ const WARN = '#d98324'
 
 interface Props {
   metricas: Metricas
+  config?: LoteriaConfig
 }
 
-export default function Dashboard({ metricas }: Props) {
+export default function Dashboard({ metricas, config = megasenaConfig }: Props) {
   const freqData = metricas.frequencia.map((f) => ({ dezena: f.dezena, contagem: f.contagem }))
   const topAtraso = [...metricas.atraso].sort((a, b) => b.atraso - a.atraso).slice(0, 12)
   const parImparData = metricas.parImpar.map((p) => ({
-    nome: `${p.pares}P/${6 - p.pares}Í`,
+    nome: `${p.pares}P/${config.dezenasMin - p.pares}Í`,
     contagem: p.contagem,
   }))
+  const paresDestaque = Math.floor(config.dezenasMin / 2)
   const { soma } = metricas
 
   return (
@@ -65,12 +69,14 @@ export default function Dashboard({ metricas }: Props) {
               />
               <Bar dataKey="contagem" fill={ACCENT}>
                 {parImparData.map((_, i) => (
-                  <Cell key={i} fill={i === 3 ? WARN : ACCENT} />
+                  <Cell key={i} fill={i === paresDestaque ? WARN : ACCENT} />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-          <p className="muted">Destaque: 3 pares + 3 ímpares (equilíbrio).</p>
+          <p className="muted">
+            Destaque: {paresDestaque} pares + {config.dezenasMin - paresDestaque} ímpares (equilíbrio).
+          </p>
         </div>
 
         <div className="panel">

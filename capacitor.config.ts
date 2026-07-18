@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.infocem.megasena',
-  appName: 'Mega-Sena Manager',
+  appId: 'com.lotohub.app',
+  appName: 'LotoHub',
   webDir: 'dist',
   server: {
     androidScheme: 'https',

@@ -1,5 +1,5 @@
 {
-  "name": "ms-manager",
+  "name": "loto-hub",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -22,6 +22,7 @@
     "idb-keyval": "^6.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.1",
     "recharts": "^2.12.7"
   },
   "devDependencies": {

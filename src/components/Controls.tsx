@@ -1,5 +1,7 @@
 // Seletor de janela de análise (US-004). Recalcular métricas é responsabilidade
 // do App, que recomputa ao mudar a janela.
+import { megasenaConfig } from '../config/megasena'
+import type { LoteriaConfig } from '../config/loterias'
 import type { Janela } from '../types'
 
 const OPCOES: { valor: Janela; rotulo: string }[] = [
@@ -13,9 +15,15 @@ interface Props {
   janela: Janela
   onJanela: (j: Janela) => void
   totalConcursos: number
+  config?: LoteriaConfig
 }
 
-export default function Controls({ janela, onJanela, totalConcursos }: Props) {
+export default function Controls({
+  janela,
+  onJanela,
+  totalConcursos,
+  config: _config = megasenaConfig,
+}: Props) {
   return (
     <div className="controls">
       <span className="controls__label">Janela de análise:</span>

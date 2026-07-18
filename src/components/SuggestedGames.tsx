@@ -2,32 +2,51 @@
 // de pesos/quantidade e botão Regenerar. Aviso de honestidade estatística sempre
 // visível — o produto diversifica seleções, NÃO prevê resultados.
 import { useMemo, useState } from 'react'
+import { megasenaConfig } from '../config/megasena'
+import type { LoteriaConfig } from '../config/loterias'
 import { gerarJogos } from '../engine/generator'
 import type { Janela, Metricas, Pesos } from '../types'
 
 interface Props {
   metricas: Metricas
   janela: Janela
+  config?: LoteriaConfig
 }
 
 const PESOS_INICIAIS: Pesos = { quentes: 40, atrasadas: 40, aleatorio: 20 }
 
-export default function SuggestedGames({ metricas, janela }: Props) {
+/** Calcula C(n, k) de forma exata para pequenos inteiros (usado no aviso honesto). */
+function combinacoes(n: number, k: number): number {
+  if (k > n || k < 0) return 0
+  k = Math.min(k, n - k)
+  let resultado = 1
+  for (let i = 1; i <= k; i++) {
+    resultado = (resultado * (n - k + i)) / i
+  }
+  return Math.round(resultado)
+}
+
+export default function SuggestedGames({ metricas, janela, config = megasenaConfig }: Props) {
   const [pesos, setPesos] = useState<Pesos>(PESOS_INICIAIS)
   const [qtd, setQtd] = useState(5)
   const [semente, setSemente] = useState(1)
 
   const { jogos, relaxamentoMaximo } = useMemo(
     () =>
-      gerarJogos(metricas, {
-        qtdJogos: qtd,
-        janela,
-        pesos,
-        // a semente muda a cada "Regenerar"; combinada com a janela mantém
-        // reprodutibilidade dentro do mesmo estado.
-        seed: semente * 1000003,
-      }),
-    [metricas, pesos, qtd, semente, janela],
+      gerarJogos(
+        metricas,
+        {
+          qtdJogos: qtd,
+          janela,
+          pesos,
+          // a semente muda a cada "Regenerar"; combinada com a janela mantém
+          // reprodutibilidade dentro do mesmo estado.
+          seed: semente * 1000003,
+        },
+        undefined,
+        config,
+      ),
+    [metricas, pesos, qtd, semente, janela, config],
   )
 
   const ajustarPeso = (chave: keyof Pesos, valor: number) =>
@@ -38,11 +57,12 @@ export default function SuggestedGames({ metricas, janela }: Props) {
       <h2>Jogos sugeridos</h2>
 
       <div className="aviso" role="note">
-        <strong>Aviso de honestidade estatística.</strong> A Mega-Sena é um sorteio
+        <strong>Aviso de honestidade estatística.</strong> A {config.nome} é um sorteio
         aleatório de variáveis independentes. <strong>Nenhuma análise aumenta a
-        probabilidade real de acerto</strong> (~1 em 50 milhões por jogo de 6 dezenas).
-        Estes jogos são uma <em>estratégia de seleção/diversificação transparente</em>,
-        não uma previsão.
+        probabilidade real de acerto</strong> (
+        ~1 em {combinacoes(config.faixaMax, config.dezenasMin).toLocaleString('pt-BR')} por jogo de{' '}
+        {config.dezenasMin} dezenas). Estes jogos são uma{' '}
+        <em>estratégia de seleção/diversificação transparente</em>, não uma previsão.
       </div>
 
       <div className="gerador-controles">

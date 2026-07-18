@@ -15,7 +15,7 @@ export interface EstadoConcursos {
   erro: string | null
 }
 
-export function useConcursos(): EstadoConcursos {
+export function useConcursos(loteriaId?: string): EstadoConcursos {
   const [estado, setEstado] = useState<EstadoConcursos>({
     status: 'carregando',
     concursos: [],
@@ -30,6 +30,7 @@ export function useConcursos(): EstadoConcursos {
     ;(async () => {
       try {
         const res = await carregarConcursos({
+          loteriaId,
           onProgresso: (feito, total) => {
             if (ativo) setEstado((e) => ({ ...e, progresso: { feito, total } }))
           },
@@ -55,7 +56,7 @@ export function useConcursos(): EstadoConcursos {
     return () => {
       ativo = false
     }
-  }, [])
+  }, [loteriaId])
 
   return estado
 }

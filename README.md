@@ -1,6 +1,6 @@
-# Mega-Sena Manager
+# LotoHub
 
-Gerenciador de jogos da Mega-Sena (Vite + React + TypeScript). Carrega o histórico
+Hub multi-loterias com suporte a Mega-Sena e Lotofácil (Vite + React + TypeScript). Carrega o histórico
 oficial de concursos da Caixa, calcula estatísticas e sugere jogos.
 
 📖 [Guia do Usuário](docs/GUIA-USUARIO.md)
