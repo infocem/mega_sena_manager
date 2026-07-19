@@ -35,7 +35,8 @@ describe('cache / carregarConcursos', () => {
     const seed = vi.fn(() => {
       throw new Error('seed não deveria ser chamado')
     })
-    const buscarNovos = vi.fn(async (ultimo: number) => {
+    const buscarNovos = vi.fn(async (loteriaId: string, ultimo: number) => {
+      expect(loteriaId).toBe('megasena')
       expect(ultimo).toBe(3) // pediu só a partir do último cacheado
       return [mk(4), mk(5)]
     })

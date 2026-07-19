@@ -20,7 +20,6 @@ export class CacheKeyManager {
   }
 }
 
-/** Dependências injetáveis (facilita teste sem IndexedDB/rede reais). */
 export interface CacheDeps {
   getCache?: (chave: string) => Promise<Concurso[] | undefined>
   setCache?: (chave: string, valor: Concurso[]) => Promise<void>
@@ -76,7 +75,7 @@ export async function carregarConcursos(
   const ultimoCacheado = base.length ? base[base.length - 1].numero : 0
   let novos: Concurso[] = []
   try {
-    novos = await buscarNovos(ultimoCacheado, {
+    novos = await buscarNovos(opts.loteriaId ?? LOTERIA_PADRAO, ultimoCacheado, {
       ...opts.fetch,
       onProgresso: opts.onProgresso,
     })

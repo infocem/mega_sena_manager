@@ -4,18 +4,15 @@
 // Robustez: retry com backoff exponencial, timeout por request e headers necessários.
 import { parseCaixaRaw } from '../data/parser'
 import type { CaixaConcursoRaw, Concurso } from '../types'
-import { API_BASE } from './base'
+import { getApiBase } from './base'
 
-const BASE = API_BASE
 const TIMEOUT_MS = 15000
 const MAX_TENTATIVAS = 5
 
 export interface FetchOpts {
-  /** Injetável para testes. */
   fetchImpl?: typeof fetch
   timeoutMs?: number
   maxTentativas?: number
-  /** Atraso base do backoff (ms); injetável p/ testes rápidos. */
   baseBackoffMs?: number
 }
 
@@ -51,31 +48,32 @@ async function buscarJson(
   }
 }
 
-/** Descobre o último concurso apurado. */
-export async function fetchUltimo(opts: FetchOpts = {}): Promise<Concurso> {
-  const raw = await buscarJson(BASE, opts)
+export async function fetchUltimo(loteriaId: string, opts: FetchOpts = {}): Promise<Concurso> {
+  const base = getApiBase(loteriaId)
+  const raw = await buscarJson(base, opts)
   const c = parseCaixaRaw(raw)
   if (!c) throw new Error('Resposta inválida da API ao buscar último concurso')
   return c
 }
 
-/** Busca um concurso específico pelo número. */
-export async function fetchConcurso(numero: number, opts: FetchOpts = {}): Promise<Concurso> {
-  const raw = await buscarJson(`${BASE}/${numero}`, opts)
+export async function fetchConcurso(
+  loteriaId: string,
+  numero: number,
+  opts: FetchOpts = {},
+): Promise<Concurso> {
+  const base = getApiBase(loteriaId)
+  const raw = await buscarJson(`${base}/${numero}`, opts)
   const c = parseCaixaRaw(raw)
   if (!c) throw new Error(`Resposta inválida da API ao buscar concurso ${numero}`)
   return c
 }
 
-/**
- * Busca os concursos novos (numero > ultimoCacheado) até o último apurado.
- * Concorrência conservadora para não sobrecarregar a API.
- */
 export async function fetchNovos(
+  loteriaId: string,
   ultimoCacheado: number,
   opts: FetchOpts & { concorrencia?: number; onProgresso?: (feito: number, total: number) => void } = {},
 ): Promise<Concurso[]> {
-  const ultimo = await fetchUltimo(opts)
+  const ultimo = await fetchUltimo(loteriaId, opts)
   if (ultimo.numero <= ultimoCacheado) return []
 
   const pendentes: number[] = []
@@ -91,7 +89,7 @@ export async function fetchNovos(
     while (pendentes.length) {
       const n = pendentes.shift()!
       try {
-        novos.push(await fetchConcurso(n, opts))
+        novos.push(await fetchConcurso(loteriaId, n, opts))
       } catch {
         // concurso novo indisponível agora: ignora; próxima recarga tenta de novo
       }
