@@ -19,16 +19,24 @@ function isLoteriaIdSuportada(id: string): id is LoteriaId {
   return id in configsPorLoteria
 }
 
-/** Retorna o nome do arquivo seed para uma loteria. */
-function nomeArquivoSeed(loteriaId: LoteriaId): string {
-  return `./${loteriaId}-seed.json`
-}
-
 /** Carrega o conteúdo bruto do arquivo seed de forma dinâmica.
- *  Lança erro se o arquivo não existir ou não puder ser importado. */
+ *  Lança erro se o arquivo não existir ou não puder ser importado.
+ *
+ *  Os caminhos PRECISAM ser strings literais: o Vite/Rollup só analisa
+ *  estaticamente `import()` com caminho literal. Com caminho computado
+ *  (`./${id}-seed.json`) o seed não entra no bundle de produção e some
+ *  no app Android — regressão coberta por scripts/verify-bundle-seeds.mjs. */
 async function importarSeedFile(loteriaId: LoteriaId): Promise<SeedFile> {
-  const modulo = await import(nomeArquivoSeed(loteriaId))
-  return modulo.default as SeedFile
+  switch (loteriaId) {
+    case 'megasena': {
+      const modulo = await import('./megasena-seed.json')
+      return modulo.default as SeedFile
+    }
+    case 'lotofacil': {
+      const modulo = await import('./lotofacil-seed.json')
+      return modulo.default as SeedFile
+    }
+  }
 }
 
 /** Classe responsável por carregar e cachear seeds de várias loterias. */

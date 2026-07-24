@@ -13,7 +13,8 @@
     "cap:sync": "npm run build && npx cap sync android",
     "cap:open": "npm run cap:sync && npx cap open android",
     "cap:build:debug": "npm run cap:sync && cd android && ./gradlew assembleDebug",
-    "cap:build:release": "npm run cap:sync && cd android && ./gradlew assembleRelease"
+    "cap:build:release": "npm run cap:sync && cd android && ./gradlew assembleRelease",
+    "verify:bundle": "npm run build && node scripts/verify-bundle-seeds.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.1",

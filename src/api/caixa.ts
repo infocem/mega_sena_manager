@@ -3,8 +3,17 @@
 // que contorna o CORS. No Android nativo, CapacitorHttp bypassa CORS via HTTP nativo.
 // Robustez: retry com backoff exponencial, timeout por request e headers necessários.
 import { parseCaixaRaw } from '../data/parser'
+import { lotofacilConfig } from '../config/lotofacil'
+import { megasenaConfig } from '../config/megasena'
+import type { LoteriaConfig } from '../config/loterias'
 import type { CaixaConcursoRaw, Concurso } from '../types'
 import { getApiBase } from './base'
+
+// getApiBase já valida o loteriaId; o padrão Mega-Sena preserva o
+// comportamento legado do parser (config default).
+function configDaLoteria(loteriaId: string): LoteriaConfig {
+  return loteriaId === lotofacilConfig.id ? lotofacilConfig : megasenaConfig
+}
 
 const TIMEOUT_MS = 15000
 const MAX_TENTATIVAS = 5
@@ -51,7 +60,7 @@ async function buscarJson(
 export async function fetchUltimo(loteriaId: string, opts: FetchOpts = {}): Promise<Concurso> {
   const base = getApiBase(loteriaId)
   const raw = await buscarJson(base, opts)
-  const c = parseCaixaRaw(raw)
+  const c = parseCaixaRaw(raw, configDaLoteria(loteriaId))
   if (!c) throw new Error('Resposta inválida da API ao buscar último concurso')
   return c
 }
@@ -63,7 +72,7 @@ export async function fetchConcurso(
 ): Promise<Concurso> {
   const base = getApiBase(loteriaId)
   const raw = await buscarJson(`${base}/${numero}`, opts)
-  const c = parseCaixaRaw(raw)
+  const c = parseCaixaRaw(raw, configDaLoteria(loteriaId))
   if (!c) throw new Error(`Resposta inválida da API ao buscar concurso ${numero}`)
   return c
 }
